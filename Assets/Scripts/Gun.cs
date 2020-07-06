@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour
     public float maxRecoil = 0.6f;
     public float recoil;
     public Animator animator;
+    public AudioSource audioSource;
 
     void Start()
     {
@@ -36,6 +37,7 @@ public class Gun : MonoBehaviour
     void Shoot()
     {
         muzzleFlash.Play();
+        audioSource.Play();
         RaycastHit hit;
         if(Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, range))
         {
