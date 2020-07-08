@@ -142,13 +142,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 175315820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b60f00137ad342f3a1dc7710c92c077, type: 3}
+  m_Script: {fileID: 11500000, guid: 37c747ad9cb7b0d4fa653f4bd3050e8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _range: 100
   _minRecoil: 0.4
   _maxRecoil: 0.6
-  _impactForce: 100
+  _impactForce: 150
   _visualRecoilAngle: 2.5
   _sprintSlerpSpeed: 5
   _primaryDamage: 10
@@ -1112,7 +1112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1849755172737674, guid: e611388c95bd20b448e9f4a0d66cba16, type: 3}
       propertyPath: m_Name
-      value: Gun
+      value: Heavy
       objectReference: {fileID: 0}
     - target: {fileID: 4178500908089732, guid: e611388c95bd20b448e9f4a0d66cba16, type: 3}
       propertyPath: m_LocalPosition.x

@@ -15,15 +15,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _jumpHeight = 8.0f;
     [SerializeField] private float _gravity = 20.0f;
     
-    private Gun _gun;
+    private Heavy _heavy;
     public Animator _playerAnimator;
 
     void Start()
     {
         _characterController = GetComponent<CharacterController>();
         if (_characterController == null) Debug.LogError("CharacterController is NULL");
-        _gun = GameObject.Find("Gun").GetComponent<Gun>();
-        if (_gun == null) Debug.LogError("Gun is NULL");
+        _heavy = GameObject.Find("Heavy").GetComponent<Heavy>();
+        if (_heavy == null) Debug.LogError("Heavy is NULL");
     }
 
     void Update()
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         {
             _direction.x = runningSpeed * _direction.x;
             _direction.z = runningSpeed * _direction.z;
-            _gun.Sprint(true);
+            _heavy.Sprint(true);
             if (_characterController.isGrounded)
             {
                 _playerAnimator.SetBool("isRunning", true);
@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
             _direction.x = walkingSpeed * _direction.x;
             _direction.z = walkingSpeed * _direction.z;
             _playerAnimator.SetBool("isRunning", false);
-            _gun.Sprint(false);
+            _heavy.Sprint(false);
         }
 
         if (_jumpInput && _characterController.isGrounded)
@@ -92,12 +92,12 @@ public class PlayerController : MonoBehaviour
     {
        if (_primaryFireInput)
         {
-            _gun.PrimaryFire();
+            _heavy.PrimaryFire();
         }
 
         if (_secondaryFireInput)
         {
-            _gun.SecondaryFire();
+            _heavy.SecondaryFire();
         }
     }
 }

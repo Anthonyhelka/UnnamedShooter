@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public class Heavy : MonoBehaviour
 {
     [Header("General Settings")]
     [SerializeField] private float _range = 100.0f;
