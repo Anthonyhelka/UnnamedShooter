@@ -8,14 +8,14 @@ public class CameraController : MonoBehaviour
     private float _mouseX, _mouseY, _xRotation;
     [SerializeField] private float _mouseSensitivity = 50.0f;
 
-    void Start()
+    private void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Transform>();
         if (_player == null) Debug.LogError("Player is NULL");
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
+    private void Update()
     {
         GetInput();
 
@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour
         _player.Rotate(0.0f, _mouseX * _mouseSensitivity * Time.deltaTime, 0.0f);
     }
 
-    void GetInput()
+    private void GetInput()
     {
         _mouseX = Input.GetAxisRaw("Mouse X");
         _mouseY = Input.GetAxisRaw("Mouse Y");

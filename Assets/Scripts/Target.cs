@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-    public float health = 50.0f;
+    [SerializeField] private float _health = 50.0f;
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float damage)
     {
-        health -= amount;
-        if (health <= 0)
+        _health -= damage;
+        if (_health <= 0)
         {
             Die();
         }
     }
 
-    void Die()
+    private void Die()
     {
         Destroy(gameObject);
     }

@@ -11,6 +11,11 @@ public class Heavy : MonoBehaviour
     [SerializeField] private float _visualRecoilAngle = 1.0f;
     [SerializeField] private float _sprintSlerpPositionSpeed = 12.5f;
     [SerializeField] private float _sprintSlerpRotationSpeed = 8.0f;
+    [SerializeField] private float _minSpread = 0.0f;
+    [SerializeField] private float _maxSpread = 0.05f;
+    [SerializeField] private float _spreadIncrease = 0.01f;
+    [SerializeField] private float _spreadRecoveryTime = 0.5f;
+    [SerializeField] private float _spreadRecoverySpeed = 30.0f;
 
     [Header("Primary Fire Settings")]
     [SerializeField] private float _primaryDamage = 10.0f;
@@ -30,29 +35,20 @@ public class Heavy : MonoBehaviour
 
     private bool _canFire = true;
     private float _fireCooldown = -0.1f;
-    private Vector3 _sprintSmoothDampVelocity, _recoilSmoothDampVelocity =  Vector3.zero;
+    private Vector3 _sprintSmoothDampVelocity, _recoilSmoothDampVelocity = Vector3.zero;
     private float _totalVisualRecoilAngle;
     private float _recoilAngleSmoothDampVelocity = 0.0f;
-    // public Vector3 _targetSprintPosition = new Vector3(-7.5f, -1.0f, 0.0f);
     private Vector3 _targetSprintPosition = new Vector3(-0.1f, -0.26f, 0.4f);
     private Quaternion _targetSprintRotation = Quaternion.Euler(new Vector3(10.0f, -55.0f, 40.0f));
     private float _totalSprintPositionSlerp, _totalSprintRotationSlerp;
-
     private Transform _shootPoint;
     private Vector3 _shootDirection;
-    public float spreadFactor = 0.1f;
     public GameObject impactEffect;
-    public float _totalSpread;
-    public float _minSpread = 0.0f;
-    public float _maxSpread = 0.05f;
-    public float _spreadIncrease = 0.01f;
-    public float _spreadRecoveryTime = 0.5f;
-    public float _spreadRecovery;
-    public float _spreadRecoverySpeed = 30.0f;
-
+    private float _totalSpread;
+    private float _spreadRecovery;
     private Reticle _reticle;
 
-    void  Start()
+    private void Start()
     {
         _shootPoint = GameObject.Find("PlayerCamera").GetComponent<Transform>();
         if (_shootPoint == null) Debug.LogError("PlayerCamera is NULL");
@@ -68,7 +64,7 @@ public class Heavy : MonoBehaviour
         if (_reticle == null) Debug.LogError("Reticle is NULL");
     }
 
-    void Update()
+    private void Update()
     {
         transform.localPosition = Vector3.SmoothDamp(transform.localPosition, new Vector3(0.1f, -0.225f, 0.375f), ref _recoilSmoothDampVelocity, 0.1f);
         _totalVisualRecoilAngle = Mathf.SmoothDamp(_totalVisualRecoilAngle, 0, ref _recoilAngleSmoothDampVelocity, 0.1f);
@@ -85,8 +81,8 @@ public class Heavy : MonoBehaviour
     {
         if (_fireCooldown < Time.time && _canFire)
         {
-            Fire(_primaryDamage, _primaryFireRate);
             _fireCooldown = Time.time + _primaryFireRate;
+            Fire(_primaryDamage, _primaryFireRate);
         }
     }
 
@@ -94,8 +90,8 @@ public class Heavy : MonoBehaviour
     {
         if (_fireCooldown < Time.time && _canFire)
         {
-            StartCoroutine(BurstCoroutine());
             _fireCooldown = Time.time + _secondaryFireRate;
+            StartCoroutine(BurstCoroutine());
         }
     }
 
@@ -146,6 +142,7 @@ public class Heavy : MonoBehaviour
         for (int i = 0; i < _burstFireAmount; i++) 
             {
                 Fire(_secondaryDamage, _burstFireRate);
+                _fireCooldown += _burstFireRate;
                 yield return new WaitForSeconds(_burstFireRate);
             }
     }

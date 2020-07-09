@@ -4,36 +4,36 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private CharacterController _characterController;
-    private float _horizontalInput, _verticalInput;
-    private bool _sprintInput, _jumpInput, _primaryFireInput, _secondaryFireInput;
-    private Vector3 _direction;
-
     [Header("Movement Settings")]
     [SerializeField] private float walkingSpeed = 7.5f;
     [SerializeField] private float runningSpeed = 11.5f;
     [SerializeField] private float _jumpHeight = 8.0f;
     [SerializeField] private float _gravity = 20.0f;
-    
+    private CharacterController _characterController;
+    private float _horizontalInput, _verticalInput;
+    private bool _sprintInput, _jumpInput, _primaryFireInput, _secondaryFireInput;
+    private Vector3 _direction;
     private Heavy _heavy;
-    public Animator _playerAnimator;
+    private Animator _playerAnimator;
 
-    void Start()
+    private void Start()
     {
         _characterController = GetComponent<CharacterController>();
         if (_characterController == null) Debug.LogError("CharacterController is NULL");
+        _playerAnimator = GameObject.Find("CameraContainer").GetComponent<Animator>();
+        if (_playerAnimator == null) Debug.LogError("PlayerAnimator is NULL");
         _heavy = GameObject.Find("Heavy").GetComponent<Heavy>();
         if (_heavy == null) Debug.LogError("Heavy is NULL");
     }
 
-    void Update()
+    private void Update()
     {
         GetInput();
         CalculateMovement();
         FireWeapon();
     }
 
-    void GetInput()
+    private void GetInput()
     {
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
         _secondaryFireInput = Input.GetButton("Fire2");
     }
 
-    void CalculateMovement()
+    private void CalculateMovement()
     {
         float directionY = _direction.y;
         _direction = new Vector3(_horizontalInput, 0.0f, _verticalInput).normalized;
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
         _characterController.Move(_direction * Time.deltaTime);
     }
 
-    void FireWeapon()
+    private void FireWeapon()
     {
        if (_primaryFireInput)
         {

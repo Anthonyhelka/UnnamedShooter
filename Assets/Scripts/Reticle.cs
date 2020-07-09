@@ -5,28 +5,26 @@ using UnityEngine.UI;
 
 public class Reticle : MonoBehaviour
 {
-    private RectTransform recticle;
-    public float restingSize = 35.0f;
-    public float currentSize = 0.0f;
-    public float speed = 20.0f;
-    public bool isFiring = false;
-    public float resize;
-    public float newSize, previousSize;
+    private RectTransform _recticle;
+    [SerializeField] private float _restingSize = 40.0f;
+    private float _currentSize = 0.0f;
+    private float _previousSize, _newSize;
+    [SerializeField] private float _expandSpeed = 30.0f;
 
-    void Start()
+    private void Start()
     {
-        recticle = GetComponent<RectTransform>();
+        _recticle = GetComponent<RectTransform>();
     }
 
-    void Update()
+    private void Update()
     {
-        currentSize = Mathf.Lerp(previousSize, newSize, Time.deltaTime * speed);
-        recticle.sizeDelta = new Vector2(currentSize, currentSize);
+        _currentSize = Mathf.Lerp(_previousSize, _newSize, Time.deltaTime * _expandSpeed);
+        _recticle.sizeDelta = new Vector2(_currentSize, _currentSize);
     }
 
     public void UpdateReticle(float spread)
     {
-        previousSize = currentSize;
-        newSize = restingSize + spread * 500;
+        _previousSize = _currentSize;
+        _newSize = _restingSize + spread * 500;
     }
 }
