@@ -110,6 +110,7 @@ public class Heavy : MonoBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage);
+                _reticle.Hitmarker();
             }
 
             if (hit.rigidbody != null)
