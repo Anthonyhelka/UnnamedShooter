@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class Reticle : MonoBehaviour
 {
     private RectTransform _recticle;
-    [SerializeField] private float _restingSize = 40.0f;
+    [SerializeField] private float _restingSize = 25.0f;
     private float _currentSize = 0.0f;
     private float _previousSize, _newSize;
     [SerializeField] private float _expandSpeed = 30.0f;
+    [SerializeField] private float _multiplyFactor = 700.0f;
 
     private void Start()
     {
@@ -25,6 +26,6 @@ public class Reticle : MonoBehaviour
     public void UpdateReticle(float spread)
     {
         _previousSize = _currentSize;
-        _newSize = _restingSize + spread * 500;
+        _newSize = _restingSize + spread * _multiplyFactor;
     }
 }

@@ -6,15 +6,15 @@ public class Heavy : MonoBehaviour
 {
     [Header("General Settings")]
     [SerializeField] private float _range = 100.0f;
-    [SerializeField] private float _impactForce = 100.0f;
+    [SerializeField] private float _impactForce = 150.0f;
     [SerializeField] private float _visualRecoilKickback = 0.03f;
     [SerializeField] private float _visualRecoilAngle = 1.0f;
-    [SerializeField] private float _sprintSlerpPositionSpeed = 12.5f;
-    [SerializeField] private float _sprintSlerpRotationSpeed = 8.0f;
+    [SerializeField] private float _sprintSlerpPositionSpeed = 6.3f;
+    [SerializeField] private float _sprintSlerpRotationSpeed = 5.0f;
     [SerializeField] private float _minSpread = 0.0f;
     [SerializeField] private float _maxSpread = 0.05f;
     [SerializeField] private float _spreadIncrease = 0.01f;
-    [SerializeField] private float _spreadRecoveryTime = 0.5f;
+    [SerializeField] private float _spreadRecoveryTime = 0.3f;
     [SerializeField] private float _spreadRecoverySpeed = 30.0f;
 
     [Header("Primary Fire Settings")]
@@ -22,16 +22,19 @@ public class Heavy : MonoBehaviour
     [SerializeField] private float _primaryFireRate = 0.3f;
 
     [Header("Secondary Fire Settings")]
-    [SerializeField] private float _secondaryDamage = 8.0f;
-    [SerializeField] private float _secondaryFireRate = 0.75f;
+    [SerializeField] private float _secondaryDamage = 6.0f;
+    [SerializeField] private float _secondaryFireRate = 0.3f;
     [SerializeField] private float _burstFireRate = 0.15f;
     [SerializeField] private float _burstFireAmount = 3;
+
+    [Header("Assets")]
+    [SerializeField] private AudioClip _fireAudioClip;
+    [SerializeField] private GameObject impactEffect;
 
     private ParticleSystem _muzzleFlash;
     private Transform _cameraContainer;
     private Animator _animator;
     private AudioSource _audioSource;
-    [SerializeField] private AudioClip _fireAudioClip;
 
     private bool _canFire = true;
     private float _fireCooldown = -0.1f;
@@ -43,7 +46,6 @@ public class Heavy : MonoBehaviour
     private float _totalSprintPositionSlerp, _totalSprintRotationSlerp;
     private Transform _shootPoint;
     private Vector3 _shootDirection;
-    public GameObject impactEffect;
     private float _totalSpread;
     private float _spreadRecovery;
     private Reticle _reticle;

@@ -149,8 +149,8 @@ MonoBehaviour:
   _impactForce: 150
   _visualRecoilKickback: 0.03
   _visualRecoilAngle: 1
-  _sprintSlerpPositionSpeed: 12.5
-  _sprintSlerpRotationSpeed: 8
+  _sprintSlerpPositionSpeed: 6.3
+  _sprintSlerpRotationSpeed: 5
   _minSpread: 0
   _maxSpread: 0.05
   _spreadIncrease: 0.01
@@ -988,6 +988,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _restingSize: 25
   _expandSpeed: 30
+  _multiplyFactor: 700
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
