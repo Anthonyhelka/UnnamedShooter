@@ -11,8 +11,8 @@ public class Reticle : MonoBehaviour
     [SerializeField] private float _multiplyFactor = 700.0f;
 
     [Header("Hitmarker Settings")]
-    [SerializeField] private float _hitmarkerDuration = 0.5f;
-    [SerializeField] private float _hitmarkerFadeSpeed = 0.5f;
+    [SerializeField] private float _hitmarkerDuration = 0.05f;
+    [SerializeField] private float _hitmarkerFadeSpeed = 15.0f;
     [SerializeField] private AudioClip _hitmarkerClip;
 
     private RectTransform _reticle;
@@ -21,6 +21,10 @@ public class Reticle : MonoBehaviour
     private AudioSource _audioSource;
     private Image _hitmarkerImage;
     private float _currentHitmarkerDuration = 0.0f;
+    private GameObject _hitmarker;
+    private Image[] _hitmarkerLines;
+    private Color _normalHit = new Color(1.0f, 1.0f, 1.0f, 0.9f);
+    private  Color _criticalHit =  new Color(0.94f, 0.51f, 0.47f, 0.9f);
 
     private void Start()
     {
@@ -28,13 +32,13 @@ public class Reticle : MonoBehaviour
         if (_reticle == null) Debug.LogError("Reticle is NULL");
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null) Debug.LogError("AudioSource is NULL");
-        _hitmarkerImage = GameObject.Find("HitmarkerImage").GetComponent<Image>();
-        if (_hitmarkerImage == null) Debug.LogError("Hitmarker Image is NULL");
-        _hitmarkerImage.color = new Color(1, 1, 1, 0);
+        _hitmarker = GameObject.Find("Hitmarker");
+        if (_hitmarker == null) Debug.LogError("Hitmarker is NULL");
+        _hitmarkerLines = _hitmarker.GetComponentsInChildren<Image>();
     }
 
     private void Update()
-    {
+    {  
         _currentSize = Mathf.Lerp(_previousSize, _newSize, Time.deltaTime * _expandSpeed);
         _reticle.sizeDelta = new Vector2(_currentSize, _currentSize);
         if (_currentHitmarkerDuration > 0.0f)
@@ -43,7 +47,12 @@ public class Reticle : MonoBehaviour
         }
         else
         {
-            _hitmarkerImage.color = Color.Lerp(_hitmarkerImage.color, new Color(1, 1, 1, 0), Time.deltaTime * _hitmarkerFadeSpeed);
+            foreach(Image line in _hitmarker.GetComponentsInChildren<Image>()) 
+            {
+                Color tempColor = line.color;
+                tempColor.a = 0.0f;
+                line.color = Color.Lerp(line.color, tempColor, Time.deltaTime * _hitmarkerFadeSpeed);
+            }
         }
     }
 
@@ -53,10 +62,20 @@ public class Reticle : MonoBehaviour
         _newSize = _restingSize + spread * _multiplyFactor;
     }
 
-    public void Hitmarker()
+    public void Hitmarker(bool critical)
     {
         _audioSource.PlayOneShot(_hitmarkerClip);
-        _hitmarkerImage.color = new Color(1, 1, 1, 1);
         _currentHitmarkerDuration = _hitmarkerDuration;
+        foreach(Image line in _hitmarker.GetComponentsInChildren<Image>()) 
+        {
+            if (critical)
+            {
+                line.color = _criticalHit;
+            }
+            else
+            {
+                line.color = _normalHit;
+            }
+        }
     }
 }

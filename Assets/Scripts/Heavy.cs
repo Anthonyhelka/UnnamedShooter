@@ -6,7 +6,8 @@ public class Heavy : MonoBehaviour
 {
     [Header("General Settings")]
     [SerializeField] private float _range = 100.0f;
-    [SerializeField] private float _impactForce = 150.0f;
+    [SerializeField] private float _impactForce = 100.0f;
+    [SerializeField] private float _criticalMultiplier = 2.0f;
     [SerializeField] private float _visualRecoilKickback = 0.03f;
     [SerializeField] private float _visualRecoilAngle = 1.0f;
     [SerializeField] private float _sprintSlerpPositionSpeed = 6.3f;
@@ -16,7 +17,7 @@ public class Heavy : MonoBehaviour
     [SerializeField] private float _spreadIncrease = 0.01f;
     [SerializeField] private float _spreadRecoveryTime = 0.3f;
     [SerializeField] private float _spreadRecoverySpeed = 30.0f;
-
+    
     [Header("Primary Fire Settings")]
     [SerializeField] private float _primaryDamage = 10.0f;
     [SerializeField] private float _primaryFireRate = 0.3f;
@@ -106,11 +107,20 @@ public class Heavy : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(_shootPoint.position, _shootDirection, out hit, _range))
         {
-            Target target = hit.transform.GetComponent<Target>();
+            Debug.Log(hit.transform.tag);
+            Target target = hit.transform.parent.GetComponent<Target>();
             if (target != null)
             {
-                target.TakeDamage(damage);
-                _reticle.Hitmarker();
+                if (hit.transform.tag == "Critical") 
+                {
+                    target.TakeDamage(damage * _criticalMultiplier);
+                    _reticle.Hitmarker(true);
+                } 
+                else
+                {
+                    target.TakeDamage(damage);
+                    _reticle.Hitmarker(false);
+                }
             }
 
             if (hit.rigidbody != null)
