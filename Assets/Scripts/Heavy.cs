@@ -7,6 +7,9 @@ public class Heavy : MonoBehaviour
     [Header("General Settings")]
     [SerializeField] private float _range = 100.0f;
     [SerializeField] private float _impactForce = 100.0f;
+    [SerializeField] private int _magazineSize = 20;
+    [SerializeField] private int _magazine = 20;
+    [SerializeField] private float _reloadDuration = 1.0f;
     [SerializeField] private float _criticalMultiplier = 2.0f;
     [SerializeField] private float _visualRecoilKickback = 0.03f;
     [SerializeField] private float _visualRecoilAngle = 1.0f;
@@ -29,9 +32,11 @@ public class Heavy : MonoBehaviour
     [SerializeField] private float _burstFireAmount = 3;
 
     [Header("Assets")]
-    [SerializeField] private AudioClip _fireAudioClip;
+    [SerializeField] private AudioClip _primaryFireAudioClip;
+    [SerializeField] private AudioClip _secondaryFireAudioClip;
     [SerializeField] private GameObject impactEffect;
 
+    [SerializeField] private UI _uiScript;
     private ParticleSystem _muzzleFlash;
     private Transform _cameraContainer;
     private Animator _animator;
@@ -65,13 +70,16 @@ public class Heavy : MonoBehaviour
         if (_audioSource == null) Debug.LogError("AudioSource is NULL");
         _reticle = GameObject.Find("Reticle").GetComponent<Reticle>();
         if (_reticle == null) Debug.LogError("Reticle is NULL");
+        _uiScript = GameObject.Find("Canvas").GetComponent<UI>();
+        if (_uiScript == null) Debug.LogError("UIScript is NULL");
+        _uiScript.UpdateMagazine(_magazine, _magazineSize);
     }
 
     private void Update()
     {
-        transform.localPosition = Vector3.SmoothDamp(transform.localPosition, new Vector3(0.1f, -0.225f, 0.375f), ref _recoilSmoothDampVelocity, 0.1f);
+        transform.localPosition = Vector3.SmoothDamp(transform.localPosition, new Vector3(0.045f, -0.0625f, 0.15f), ref _recoilSmoothDampVelocity, 0.1f);
         _totalVisualRecoilAngle = Mathf.SmoothDamp(_totalVisualRecoilAngle, 0, ref _recoilAngleSmoothDampVelocity, 0.1f);
-        transform.localEulerAngles = transform.localEulerAngles = Vector3.left * _totalVisualRecoilAngle;
+        // transform.localEulerAngles = transform.localEulerAngles = Vector3.left * _totalVisualRecoilAngle;
         if (_spreadRecovery < Time.time)
         {
             _totalSpread -= _spreadIncrease * _spreadRecoverySpeed * Time.deltaTime;
@@ -82,7 +90,7 @@ public class Heavy : MonoBehaviour
 
     public void PrimaryFire()
     {
-        if (_fireCooldown < Time.time && _canFire)
+        if (_fireCooldown < Time.time && _canFire && _magazine > 0)
         {
             _fireCooldown = Time.time + _primaryFireRate;
             Fire(_primaryDamage, _primaryFireRate);
@@ -91,20 +99,29 @@ public class Heavy : MonoBehaviour
 
     public void SecondaryFire()
     {
-        if (_fireCooldown < Time.time && _canFire)
+        if (_fireCooldown < Time.time && _canFire && _magazine > 0)
         {
             _fireCooldown = Time.time + _secondaryFireRate;
             StartCoroutine(BurstCoroutine());
         }
     }
 
-    private void Fire(float damage, float fireRate)
+    private void Fire(float damage, float fireRate, bool primaryFire = true)
     {
         _muzzleFlash.Play();
-        _audioSource.PlayOneShot(_fireAudioClip);
+        if (primaryFire) {
+            _audioSource.PlayOneShot(_primaryFireAudioClip);
+        } else {
+            _audioSource.PlayOneShot(_secondaryFireAudioClip);
+        }
         Recoil();
         CalculateSpread();
         RaycastHit hit;
+        _magazine--;
+        _uiScript.UpdateMagazine(_magazine, _magazineSize);
+        if (_magazine <= 0) {
+            StartCoroutine(Reload());
+        }
         if(Physics.Raycast(_shootPoint.position, _shootDirection, out hit, _range))
         {
             Debug.Log(hit.transform.tag);
@@ -154,10 +171,24 @@ public class Heavy : MonoBehaviour
     {   
         for (int i = 0; i < _burstFireAmount; i++) 
             {
-                Fire(_secondaryDamage, _burstFireRate);
+                Fire(_secondaryDamage, _burstFireRate, false);
                 _fireCooldown += _burstFireRate;
                 yield return new WaitForSeconds(_burstFireRate);
             }
+    }
+
+    private IEnumerator Reload()
+    {   
+        _canFire = false;
+        _uiScript.UpdateMagazine(_magazine, _magazineSize, true);
+        float duration = 0.0f;
+        while (duration < _reloadDuration) {
+            duration += Time.deltaTime;
+            yield return 0;
+        }
+        _canFire = true;
+        _magazine = _magazineSize;
+        _uiScript.UpdateMagazine(_magazine, _magazineSize);
     }
 
     public void Sprint(bool isSprinting)

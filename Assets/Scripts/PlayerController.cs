@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
         if (_characterController == null) Debug.LogError("CharacterController is NULL");
         _playerAnimator = GameObject.Find("CameraContainer").GetComponent<Animator>();
         if (_playerAnimator == null) Debug.LogError("PlayerAnimator is NULL");
-        _heavy = GameObject.Find("Heavy").GetComponent<Heavy>();
+        _heavy = GameObject.Find("VP95").GetComponent<Heavy>();
         if (_heavy == null) Debug.LogError("Heavy is NULL");
     }
 
